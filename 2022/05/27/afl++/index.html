@@ -152,6 +152,22 @@ hellopdf https://github.com/mozilla/pdf.js-sample-files复制获取
 开始fuzz
 $HOME/AFLplusplus/afl-fuzz -i $HOME/fuzzing_xpdf/pdf_examples/ -o $HOME/fuzzing_xpdf/out/ -M fuzzer1  -- $HOME/fuzzing_xpdf/install/bin/pdftotext @@ $HOME/fuzzing_xpdf/output
 
+$HOME/AFLplusplus/afl-fuzz -i $HOME/fuzzing_xpdf/pdf_examples/ -o $HOME/fuzzing_xpdf/out/ -S fuzzer2  -- $HOME/fuzzing_xpdf/install/bin/pdftotext @@ $HOME/fuzzing_xpdf/output
+
+清除之前编译的内容
+rm -r $HOME/fuzzing_xpdf/install
+cd $HOME/fuzzing_xpdf/xpdf-3.02/
+make clean
+
+GDB验证
+CFLAGS=&quot;-g -O0&quot; CXXFLAGS=&quot;-g -O0&quot; ./configure --prefix=&quot;$HOME/fuzzing_xpdf/install/&quot;
+make
+make install
+cd $HOME/fuzzing_xpdf/install/bin
+gdb --args ./pdftotext $HOME/fuzzing_xpdf/out/fuzzer3/crashes/id:000001,sig:11,src:001644,time:306898,execs:119805,op:havoc,rep:8 /$HOME/fuzzing_xpdf/output
+run
+bt   /backtrace  回溯执行过的函数
+info registers  显示寄存器
 
 </code></pre>
 
